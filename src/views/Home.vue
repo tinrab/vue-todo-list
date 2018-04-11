@@ -10,15 +10,17 @@
     <div>
       <TodoItem v-for="todo in todos"
                 :key="todo.id"
-                :todo="todo" />
+                :todo="todo"
+                @complete="onCompleteTodo" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { State, Getter, Action } from 'vuex-class';
 
-import mutations from '@/mutationTypes';
+import { ActionFunction } from '@/store';
 import Todo from '@/todo';
 import TodoItem from '@/components/TodoItem.vue';
 
@@ -28,18 +30,22 @@ import TodoItem from '@/components/TodoItem.vue';
   },
 })
 export default class Home extends Vue {
-  newTodo: String = '';
+  @State('todos')
+  private todos: Todo[];
+  @Action('addTodo')
+  private addTodo: ActionFunction;
+  @Action('completeTodo')
+  private completeTodo: ActionFunction;
 
-  onAddTodo(): void {
-    this.$store.commit(mutations.addTodo, {
-      text: this.newTodo,
-    });
+  private newTodo: string = '';
+
+  private onAddTodo() {
+    this.addTodo({ text: this.newTodo });
     this.newTodo = '';
   }
 
-  get todos(): Todo[] {
-    console.log(this.$store.getters.todos);
-    return this.$store.getters.todos;
+  private onCompleteTodo(id: number) {
+    this.completeTodo({ id });
   }
 }
 </script>

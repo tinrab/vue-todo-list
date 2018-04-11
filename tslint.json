@@ -19,5 +19,7 @@
     "no-consecutive-blank-lines": false,
     "semicolon": true,
     "trailing-comma": true,
+    "no-empty": false,
+    "no-unnecessary-initializer": false
   }
 }

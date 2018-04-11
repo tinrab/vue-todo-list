@@ -1,26 +1,36 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import mutations from './mutationTypes';
 import Todo from './todo';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export type ActionFunction = (payload: any) => void;
+
+export const store = new Vuex.Store({
   state: {
-    todos: <Todo[]>[],
+    todos: [] as Todo[],
     nextTodoId: 1,
   },
   mutations: {
-    [mutations.addTodo](state, payload: { text: string }): void {
+    addTodo(state, payload: { text: string }) {
       const todo = new Todo(state.nextTodoId++, payload.text);
       state.todos.push(todo);
     },
+    completeTodo(state, payload: { id: number }) {
+      state.todos = state.todos.filter((todo) => todo.id !== payload.id);
+    }
   },
   actions: {
+    addTodo({ commit }, payload: { text: string }) {
+      commit('addTodo', payload);
+    },
+    completeTodo({ commit }, payload: { id: number }) {
+      commit('completeTodo', payload);
+    }
   },
   getters: {
-    todos: state => {
+    todos: (state) => {
       return state.todos;
     },
   }
